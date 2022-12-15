@@ -1,4 +1,4 @@
-package chain/net
+package net
 
 import (
 	"github.com/sirupsen/logrus"
