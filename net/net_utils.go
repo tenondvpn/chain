@@ -9,6 +9,30 @@ import (
 	queue "github.com/smallnest/queue"
 )
 
+const (
+	TypeQueueIndex       = 0
+	TypeAck              = 1
+	TypeNak              = 2
+	TypeHearbeatResponse = 3
+
+	TypeTxMsg               = 101
+	TypeNakMore             = 102
+	TypeHearbeatRequest     = 103
+	TypeSeqId               = 104
+	TypeSeqIdAck            = 105
+	TypeSeqIdNak            = 106
+	TypeSeqIdNakRes         = 107
+	TypeSeqIdCommit         = 108
+	TypeSeqIdNakMore        = 109
+	TypeSeqHearbeatRequest  = 110
+	TypeSeqHearbeatResponse = 111
+
+	TypeCfgNewRx          = 1000
+	TypeCfgNewTx          = 1001
+	TypeCfgRxLeaderChange = 1002
+	TypeCfgTxLeaderChange = 1003
+)
+
 var (
 	MaxPackageSize = 1024 * 1024 * 2
 	IoThreadCount  = 4

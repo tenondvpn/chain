@@ -35,7 +35,11 @@ func NewMessageHandler(threadCount int) *MessageHandler {
 	return handler
 }
 
-func (h *MessageHandler) handleMessage(items []*EventItem, epoller *epoll, cb TcpCallback, bufQueue *queue.LKQueue) {
+func (h *MessageHandler) handleMessage(
+	items []*EventItem,
+	epoller *epoll,
+	cb TcpCallback,
+	bufQueue *queue.LKQueue) {
 	for _, item := range items {
 		if item == nil {
 			break
@@ -118,40 +122,14 @@ func (h *MessageHandler) threadIoCallMsg(queueMsg *QueueMsg) {
 	queueMsg.bufQueue.Enqueue(queueMsg.msgBuf)
 }
 
-func (h *MessageHandler) callConfig(cfgMsg *ConfigMsg) {
-	h.cfgChans[cfgMsg.queueId%uint16(h.threadCount)] <- cfgMsg
-}
-
-func (h *MessageHandler) threadCfgMsg(cfgMsg *ConfigMsg) {
-	if cfgMsg.msgType == TypeCfgNewRx {
-		queuManager.queues[cfgMsg.queueId].OnNewReceiver(cfgMsg.data)
-	} else if cfgMsg.msgType == TypeCfgNewTx {
-		queuManager.queues[cfgMsg.queueId].OnNewTransmitter(cfgMsg.txCluster, cfgMsg.data)
-	} else {
-		logrus.Errorf("invalid config type: %d", cfgMsg.msgType)
-	}
-}
-
 func (h *MessageHandler) thredFunc(threadIdx int) {
 	tiker := time.NewTicker(time.Millisecond * 100)
 	for {
 		select {
 		case msg := <-h.ioChans[threadIdx]:
 			h.threadIoCallMsg(msg)
-		case cfgMsg := <-h.cfgChans[threadIdx]:
-			h.threadCfgMsg(cfgMsg)
 		case <-tiker.C:
-			for i := 0; i < SingleProcMaxQueues; i++ {
-				if queuManager.validQueues[i] == nil {
-					continue
-				}
-
-				qId := queuManager.validQueues[i].queueInfo.Id
-				if qId%uint16(h.threadCount) == uint16(threadIdx) {
-					queuManager.queues[qId].callTimer(TimeStampMilli())
-				}
-
-			}
+			logrus.Info("timer message coming.")
 		}
 	}
 }
@@ -163,12 +141,7 @@ func (h *MessageHandler) onRxMessage(data []byte, conn *net.Conn) {
 	}
 
 	qId := binary.BigEndian.Uint16(data[6:])
-	if queuManager.queues[qId] == nil {
-		logrus.Errorf("invalid queue id: %d", qId)
-		return
-	}
-
-	queuManager.queues[qId].localRx.OnMsg(data, conn)
+	logrus.Info("message id coming: %d", qId)
 }
 
 func (h *MessageHandler) onTxMessage(data []byte, conn *net.Conn) {
@@ -178,10 +151,5 @@ func (h *MessageHandler) onTxMessage(data []byte, conn *net.Conn) {
 	}
 
 	qId := binary.BigEndian.Uint16(data[6:])
-	if queuManager.queues[qId] == nil {
-		logrus.Errorf("invalid queue id: %d", qId)
-		return
-	}
-
-	queuManager.queues[qId].localTx.OnMsg(data, conn)
+	logrus.Info("message id coming: %d", qId)
 }
