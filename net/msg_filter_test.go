@@ -1,6 +1,7 @@
 package net
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -16,4 +17,6 @@ func TestMessageFilter(t *testing.T) {
 	if msgFilter.CheckUnique(1023) {
 		t.Errorf("invalid check unique 1023!")
 	}
+
+	fmt.Printf("test message filter success: %d", len(msgFilter.uniqueMessageSet))
 }
