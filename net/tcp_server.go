@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"syscall"
+	"time"
 
 	"github.com/sirupsen/logrus"
 	queue "github.com/smallnest/queue"
@@ -39,6 +40,8 @@ func (svr *TcpServer) StartServer(ipsec string) {
 		panic(err)
 	}
 
+	tcplistener := ln.(*net.TCPListener)
+	tcplistener.SetDeadline(time.Now().Add(time.Second * 2))
 	go svr.start()
 	for {
 		if svr.stoped {
