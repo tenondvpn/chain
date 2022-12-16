@@ -18,5 +18,5 @@ func TestMessageFilter(t *testing.T) {
 		t.Errorf("invalid check unique 1023!")
 	}
 
-	fmt.Printf("test message filter success: %d", len(msgFilter.uniqueMessageSet))
+	fmt.Printf("test message filter success: %d\n", len(msgFilter.uniqueMessageSet))
 }
