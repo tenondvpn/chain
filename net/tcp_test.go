@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -11,10 +12,10 @@ import (
 )
 
 var (
-	tcpConnection *EventItem
-	index         int64 = 0
-	btime         int64 = time.Now().UnixMicro()
-	ttime         int64 = time.Now().UnixMicro()
+	tcpConnection   *EventItem
+	allreceiedCount int64 = 0
+	btime           int64 = time.Now().UnixMicro()
+	ttime           int64 = time.Now().UnixMicro()
 )
 
 func onMsgForTest(qMsg *QueueMsg) bool {
@@ -23,17 +24,12 @@ func onMsgForTest(qMsg *QueueMsg) bool {
 		binary.BigEndian.PutUint32(qMsg.data[4:], uint32(1))
 		(*qMsg.conn).Write(qMsg.data)
 	} else {
-		index++
+		atomic.AddInt64(&allreceiedCount, 1)
 		etime := time.Now().UnixMicro()
 		if etime-btime >= 3000000 {
-			fmt.Printf("all: %d, avg: %d\n", index, index*1000000/(etime-ttime))
+			fmt.Printf("all: %d, avg: %d\n", allreceiedCount, allreceiedCount*1000000/(etime-ttime))
 			btime = etime
 		}
-
-		// index := binary.BigEndian.Uint32(data[8:])
-		// binary.BigEndian.PutUint32(data[4:], 0)
-		// binary.BigEndian.PutUint32(data[8:], index+1)
-		// tcpConnection.conn.Write(data)
 	}
 
 	return true
@@ -51,8 +47,7 @@ func SendMessage() {
 	val := make([]byte, 12)
 	binary.BigEndian.PutUint32(val[0:], uint32(12+len(data)))
 	binary.BigEndian.PutUint32(val[4:], 0)
-	binary.BigEndian.PutUint32(val[8:], uint32(index))
-	index++
+	binary.BigEndian.PutUint32(val[8:], 0)
 	val = append(val, data...)
 	for i := 0; i < 10000000; i++ {
 		n, err := tcpClient.Send(tcpConnection, val)
