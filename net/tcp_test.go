@@ -12,10 +12,12 @@ import (
 )
 
 var (
-	tcpConnection   *EventItem
-	allreceiedCount int64 = 0
-	btime           int64 = time.Now().UnixMicro()
-	ttime           int64 = time.Now().UnixMicro()
+	tcpConnection    *EventItem
+	allreceiedCount  int64 = 0
+	btime            int64 = time.Now().UnixMicro()
+	ttime            int64 = time.Now().UnixMicro()
+	testMessageCount       = 10000000
+	testThreadCount        = 4
 )
 
 func onMsgForTest(qMsg *QueueMsg) bool {
@@ -49,7 +51,7 @@ func SendMessage() {
 	binary.BigEndian.PutUint32(val[4:], 0)
 	binary.BigEndian.PutUint32(val[8:], 0)
 	val = append(val, data...)
-	for i := 0; i < 10000000; i++ {
+	for i := 0; i < testMessageCount; i++ {
 		n, err := tcpClient.Send(tcpConnection, val)
 		if err != nil {
 			fmt.Printf("send message failed: %d, %v", n, err)
@@ -57,7 +59,14 @@ func SendMessage() {
 		}
 	}
 
-	time.Sleep(time.Second * 100)
+	for {
+		if allreceiedCount >= testMessageCount*testThreadCount {
+			break
+		}
+
+		time.Sleep(time.Microsecond * 100)
+	}
+
 	tcpClient.Close(tcpConnection)
 	fmt.Println("close success")
 }
@@ -75,7 +84,7 @@ func TestTcp(t *testing.T) {
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < 4; i++ {
+	for i := 0; i < testThreadCount; i++ {
 		wg.Add(1)
 		go SendMessage()
 	}
