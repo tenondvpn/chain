@@ -55,7 +55,11 @@ func SendMessage() {
 	index++
 	val = append(val, data...)
 	for i := 0; i < 1000000; i++ {
-		tcpClient.Send(tcpConnection, val)
+		n, err := tcpClient.Send(tcpConnection, val)
+		if err != nil {
+			fmt.Printf("send message failed: %d, %v", n, err)
+			break
+		}
 	}
 
 	tcpClient.Close(tcpConnection)
