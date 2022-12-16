@@ -19,7 +19,7 @@ func (h *MessageHandler) handleMessage(
 	items []*EventItem,
 	epoller *epoll,
 	cb TcpCallback,
-	bufQueue *queue.LKQueue) {
+	bufQueue *queue.CQueue) {
 	for _, item := range items {
 		if item == nil {
 			break

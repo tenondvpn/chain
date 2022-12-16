@@ -12,7 +12,7 @@ import (
 type TcpServer struct {
 	epoller  *epoll
 	cb       TcpCallback
-	bufQueue *queue.LKQueue
+	bufQueue *queue.CQueue
 	stoped   bool
 }
 
@@ -22,7 +22,7 @@ func NewTcpServer(cb TcpCallback) *TcpServer {
 		panic(err)
 	}
 
-	bufQueue := queue.NewLKQueue()
+	bufQueue := queue.NewCQueue()
 	for i := 0; i < BuffPoolSize; i++ {
 		buf := new(MsgBuffer)
 		buf.buf = make([]byte, MaxPackageSize)

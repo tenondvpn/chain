@@ -73,7 +73,7 @@ type CallbackMessage struct {
 	data     []byte
 	conn     *net.Conn
 	msgBuf   *MsgBuffer
-	bufQueue *queue.LKQueue
+	bufQueue *queue.CQueue
 }
 
 type ConfigMsg struct {

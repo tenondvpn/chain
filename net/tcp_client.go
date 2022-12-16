@@ -12,7 +12,7 @@ import (
 type TcpClient struct {
 	epoller  *epoll
 	cb       TcpCallback
-	bufQueue *queue.LKQueue
+	bufQueue *queue.CQueue
 }
 
 func NewTcpClient(cb TcpCallback) *TcpClient {
@@ -21,7 +21,7 @@ func NewTcpClient(cb TcpCallback) *TcpClient {
 		panic(err)
 	}
 
-	bufQueue := queue.NewLKQueue()
+	bufQueue := queue.NewCQueue()
 	for i := 0; i < BuffPoolSize; i++ {
 		buf := new(MsgBuffer)
 		buf.buf = make([]byte, MaxPackageSize)
