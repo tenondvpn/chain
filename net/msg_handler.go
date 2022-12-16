@@ -1,37 +1,17 @@
 package net
 
 import (
-	"encoding/binary"
-	"fmt"
-	"net"
-	"runtime"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/sirupsen/logrus"
 	queue "github.com/smallnest/queue"
 )
 
 type MessageHandler struct {
 	threadCount int
-	ioChans     []chan *QueueMsg
-	cfgChans    []chan *ConfigMsg
-	bufPool     [][]byte
 }
 
 func NewMessageHandler(threadCount int) *MessageHandler {
 	handler := new(MessageHandler)
 	handler.threadCount = threadCount
-	handler.ioChans = make([]chan *QueueMsg, threadCount)
-	handler.cfgChans = make([]chan *ConfigMsg, threadCount)
-
-	for i := 0; i < threadCount; i++ {
-		handler.ioChans[i] = make(chan *QueueMsg, IoPoolSize)
-		handler.cfgChans[i] = make(chan *ConfigMsg, IoPoolSize)
-		go handler.thredFunc(i)
-	}
-
 	return handler
 }
 
@@ -61,7 +41,7 @@ func (h *MessageHandler) handleMessage(
 			}
 
 			if n > 0 {
-				qMsg := &QueueMsg{0, 0, buf, &item.conn, item.msgBuf, bufQueue}
+				qMsg := &CallbackMessage{buf, &item.conn, item.msgBuf, bufQueue}
 				hold := cb(qMsg)
 				data := bufQueue.Dequeue()
 				if data == nil {
@@ -86,70 +66,4 @@ func (h *MessageHandler) handleMessage(
 			}
 		}
 	}
-}
-
-func GoID() int {
-	var buf [64]byte
-	n := runtime.Stack(buf[:], false)
-	idField := strings.Fields(strings.TrimPrefix(string(buf[:n]), "goroutine "))[0]
-	id, err := strconv.Atoi(idField)
-	if err != nil {
-		panic(fmt.Sprintf("cannot get goroutine id: %v", err))
-	}
-	return id
-}
-
-func (h *MessageHandler) onMsg(qMsg *QueueMsg) bool {
-	qMsg.msgType = binary.BigEndian.Uint16(qMsg.data[4:6])
-	qMsg.queueId = binary.BigEndian.Uint16(qMsg.data[6:8])
-	// h.threadIoCallMsg(qMsg)
-	// logrus.Infof("now in q: %d", GoID())
-	h.ioChans[qMsg.queueId%uint16(h.threadCount)] <- qMsg
-	// logrus.Infof("now ined q: %d", GoID())
-	// queuManager.callTimer(TimeStampMilli())
-	return false
-}
-
-func (h *MessageHandler) threadIoCallMsg(queueMsg *QueueMsg) {
-	if queueMsg.msgType >= TypeTxMsg && queueMsg.msgType <= TypeSeqHearbeatResponse {
-		h.onRxMessage(queueMsg.data, queueMsg.conn)
-	} else if queueMsg.msgType >= TypeQueueIndex && queueMsg.msgType <= TypeHearbeatResponse {
-		h.onTxMessage(queueMsg.data, queueMsg.conn)
-	} else {
-		logrus.Errorf("invalid msg type: %d", queueMsg.msgType)
-	}
-
-	queueMsg.bufQueue.Enqueue(queueMsg.msgBuf)
-}
-
-func (h *MessageHandler) thredFunc(threadIdx int) {
-	tiker := time.NewTicker(time.Millisecond * 100)
-	for {
-		select {
-		case msg := <-h.ioChans[threadIdx]:
-			h.threadIoCallMsg(msg)
-		case <-tiker.C:
-			logrus.Info("timer message coming.")
-		}
-	}
-}
-
-func (h *MessageHandler) onRxMessage(data []byte, conn *net.Conn) {
-	if len(data) < 8 {
-		logrus.Errorf("invalid data len: %d", len(data))
-		return
-	}
-
-	qId := binary.BigEndian.Uint16(data[6:])
-	logrus.Infof("message id coming: %d", qId)
-}
-
-func (h *MessageHandler) onTxMessage(data []byte, conn *net.Conn) {
-	if len(data) < 8 {
-		logrus.Errorf("invalid data len: %d", len(data))
-		return
-	}
-
-	qId := binary.BigEndian.Uint16(data[6:])
-	logrus.Infof("message id coming: %d", qId)
 }

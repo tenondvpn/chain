@@ -29,7 +29,7 @@ func NMkEpoll() (*epoll, error) {
 
 func (e *epoll) Add(conn net.Conn) (*EventItem, error) {
 	fd := e.socketFD(conn)
-	msgBuf := newBuffer(conn, MaxPackageSize)
+	msgBuf := newBuffer(conn)
 	eventItem := &EventItem{conn, fd, &msgBuf, false, 8, nil}
 	u64Val := uintptr(unsafe.Pointer(eventItem))
 	first := uint32(u64Val & 0x00000000FFFFFFFF)

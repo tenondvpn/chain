@@ -13,13 +13,12 @@ type MsgBuffer struct {
 	reader net.Conn
 	buf    []byte
 	start  int // fix with callback
-	maxLen int
 	pkgLen int // must has len and read all msg, each time just read one pkg
 }
 
-func newBuffer(conn net.Conn, len int) MsgBuffer {
-	buf := make([]byte, len)
-	return MsgBuffer{conn, buf, 0, len, 0}
+func newBuffer(conn net.Conn) MsgBuffer {
+	buf := make([]byte, MaxPackageSize)
+	return MsgBuffer{conn, buf, 0, 0}
 }
 
 func (b *MsgBuffer) readFromReader() (int, []byte, error) {

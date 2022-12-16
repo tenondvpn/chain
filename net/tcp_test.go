@@ -22,11 +22,11 @@ var (
 	wg               sync.WaitGroup
 )
 
-func onMsgForTest(qMsg *QueueMsg) bool {
-	t := binary.BigEndian.Uint32(qMsg.data[4:8])
+func onMsgForTest(cbMsg *CallbackMessage) bool {
+	t := binary.BigEndian.Uint32(cbMsg.data[4:8])
 	if t == 0 { // from client
-		binary.BigEndian.PutUint32(qMsg.data[4:], uint32(1))
-		(*qMsg.conn).Write(qMsg.data)
+		binary.BigEndian.PutUint32(cbMsg.data[4:], uint32(1))
+		(*cbMsg.conn).Write(cbMsg.data)
 	} else {
 		atomic.AddInt64(&allreceiedCount, 1)
 		etime := time.Now().UnixMicro()

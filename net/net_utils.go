@@ -69,9 +69,7 @@ type EventItem struct {
 	parentConn *Connection
 }
 
-type QueueMsg struct {
-	queueId  uint16
-	msgType  uint16
+type CallbackMessage struct {
 	data     []byte
 	conn     *net.Conn
 	msgBuf   *MsgBuffer
@@ -85,7 +83,7 @@ type ConfigMsg struct {
 	data      []byte
 }
 
-type TcpCallback func(qMsg *QueueMsg) bool
+type TcpCallback func(cbMessage *CallbackMessage) bool
 type ReceiverCallback func(msgId uint64, data []byte) int
 
 func TimeStampMilli() int64 {
