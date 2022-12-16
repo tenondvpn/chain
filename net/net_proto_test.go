@@ -7,13 +7,16 @@ import (
 )
 
 func TestProto(t *testing.T) {
-	test := &BroadcastParam{}
+	test := &BroadcastParam{
+		Bloomfilter: []uint64{},
+	}
 	var tt uint32 = 1
 	test.NeighborCount = &tt
 
 	data, err := proto.Marshal(test)
 	if err != nil {
 		t.Errorf("marshaling error: ", err)
+		return
 	}
 	newTest := &BroadcastParam{}
 	err = proto.Unmarshal(data, newTest)
