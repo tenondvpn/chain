@@ -17,8 +17,9 @@ var (
 	prevReceiedCount int64 = 0
 	btime            int64 = time.Now().UnixMicro()
 	ttime            int64 = time.Now().UnixMicro()
-	testMessageCount int64 = 10000000
+	testMessageCount int64 = 1000000
 	testThreadCount  int   = 4
+	wg               sync.WaitGroup
 )
 
 func onMsgForTest(qMsg *QueueMsg) bool {
@@ -39,6 +40,7 @@ func onMsgForTest(qMsg *QueueMsg) bool {
 }
 
 func SendMessage() {
+	defer wg.Done()
 	tcpClient := NewTcpClient(onMsgForTest)
 	tcpConnection = tcpClient.ConnectServer("127.0.0.1:8990")
 	if tcpConnection == nil {
@@ -82,8 +84,6 @@ func TestTcp(t *testing.T) {
 	svr := NewTcpServer(onMsgForTest)
 	go svr.StartServer("127.0.0.1:8990")
 	time.Sleep(time.Second * 1)
-
-	var wg sync.WaitGroup
 
 	for i := 0; i < testThreadCount; i++ {
 		wg.Add(1)
