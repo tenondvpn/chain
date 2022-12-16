@@ -81,5 +81,6 @@ func TestTcp(t *testing.T) {
 	}
 
 	wg.Wait()
+	svr.StopServer()
 	fmt.Println("all over")
 }

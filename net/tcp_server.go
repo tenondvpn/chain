@@ -13,6 +13,7 @@ type TcpServer struct {
 	epoller  *epoll
 	cb       TcpCallback
 	bufQueue *queue.LKQueue
+	stoped   bool
 }
 
 func NewTcpServer(cb TcpCallback) *TcpServer {
@@ -27,7 +28,7 @@ func NewTcpServer(cb TcpCallback) *TcpServer {
 		buf.buf = make([]byte, MaxPackageSize)
 		bufQueue.Enqueue(buf)
 	}
-	svr := &TcpServer{epoller, cb, bufQueue}
+	svr := &TcpServer{epoller, cb, bufQueue, false}
 	return svr
 }
 
@@ -40,6 +41,10 @@ func (svr *TcpServer) StartServer(ipsec string) {
 
 	go svr.start()
 	for {
+		if svr.stoped {
+			break
+		}
+
 		conn, e := ln.Accept()
 		if e != nil {
 			if ne, ok := e.(net.Error); ok && ne.Temporary() {
@@ -60,8 +65,16 @@ func (svr *TcpServer) StartServer(ipsec string) {
 	}
 }
 
+func (svr *TcpServer) StopServer() {
+	svr.stoped = true
+}
+
 func (svr *TcpServer) start() {
 	for {
+		if svr.stoped {
+			break
+		}
+
 		items, err := svr.epoller.Wait()
 		if err != nil {
 			logrus.Errorf("failed to epoll wait %v\n", err)
