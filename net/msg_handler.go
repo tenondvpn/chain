@@ -52,7 +52,6 @@ func (h *MessageHandler) handleMessage(
 					panic("transfer data msg buffer failed!")
 				}
 
-				tmpBuf.maxLen = MaxPackageSize
 				tmpBuf.pkgLen = 0
 				tmpBuf.start = 0
 				tmpBuf.reader = item.msgBuf.reader
