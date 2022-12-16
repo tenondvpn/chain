@@ -7,22 +7,8 @@ import (
 )
 
 func main() {
-	test := &BroadcastParam{
-		Type:              1,
-		NeighborCount:     2,
-		StopTimes:         3,
-		HopLimit:          4,
-		LayerLeft:         4,
-		LayerRight:        4,
-		Overlap:           4,
-		HopToLayer:        4,
-		Header:            "",
-		Body:              "",
-		NetCrossed:        false,
-		Bloomfilter:       []uint64{1, 2, 3},
-		EvilRate:          4,
-		IgnBloomfilterHop: 4,
-	}
+	test := &BroadcastParam{}
+	test.Type = 1
 
 	data, err := proto.Marshal(test)
 	if err != nil {
