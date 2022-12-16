@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 	"os"
-	"syscall"
+	"testing"
 	"unsafe"
 
 	"github.com/davecgh/go-spew/spew"
