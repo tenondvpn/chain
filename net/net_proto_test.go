@@ -8,8 +8,8 @@ import (
 
 func TestProto(t *testing.T) {
 	test := &BroadcastParam{}
-	var t uint32 = 1
-	test.Type = &t
+	var tt uint32 = 1
+	test.Type = &tt
 
 	data, err := proto.Marshal(test)
 	if err != nil {
