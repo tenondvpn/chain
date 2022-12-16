@@ -1,10 +1,5 @@
 package net
 
-/*
-#include <stdlib.h>
-*/
-import "C"
-
 import (
 	"fmt"
 	"log"
