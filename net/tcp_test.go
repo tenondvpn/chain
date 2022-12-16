@@ -62,6 +62,7 @@ func SendMessage() {
 		}
 	}
 
+	time.Sleep(time.Second * 100)
 	tcpClient.Close(tcpConnection)
 	fmt.Println("close success")
 }
@@ -79,7 +80,7 @@ func TestTcp(t *testing.T) {
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < 1; i++ {
+	for i := 0; i < 2; i++ {
 		wg.Add(1)
 		go SendMessage()
 	}
