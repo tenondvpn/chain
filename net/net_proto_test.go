@@ -36,5 +36,5 @@ func TestProto(t *testing.T) {
 	testHeader := &Header{}
 	ts := "sfasdfadf"
 	testHeader.SrcDhtKey = &ts
-	fmt.Printf("tset proto success: %d, src dht key: %v!\n", *test.NeighborCount, testHeader.SrcDhtKey)
+	fmt.Printf("tset proto success: %d, src dht key: %s!\n", *test.NeighborCount, *testHeader.SrcDhtKey)
 }
