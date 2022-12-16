@@ -51,7 +51,6 @@ func (svr *TcpServer) StartServer(ipsec string) {
 		tcplistener.SetDeadline(time.Now().Add(time.Second * 2))
 		if e != nil {
 			if ne, ok := e.(net.Error); ok && ne.Temporary() {
-				logrus.Errorf("accept temp err: %v\n", ne)
 				continue
 			}
 
