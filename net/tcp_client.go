@@ -55,7 +55,7 @@ func (cli *TcpClient) Send(item *EventItem, data []byte) (int, error) {
 		return 0, errors.New("invalid connection.")
 	}
 
-	item.conn.SetWriteDeadline(time.Now().Add(time.Millisecond * 100))
+	item.conn.SetWriteDeadline(time.Now().Add(3 * time.Second))
 	n, err := item.conn.Write(data)
 	return n, err
 }

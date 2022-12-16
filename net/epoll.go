@@ -1,11 +1,12 @@
 package net
 
 import (
-	"github.com/sirupsen/logrus"
 	"net"
 	"reflect"
 	"syscall"
 	"unsafe"
+
+	"github.com/sirupsen/logrus"
 
 	"golang.org/x/sys/unix"
 )
@@ -70,7 +71,7 @@ func (e *epoll) Remove(item *EventItem) error {
 		return err
 	}
 
-	logrus.Errorf("removed epoll.")
+	logrus.Infof("removed epoll.")
 	item.removed = true
 	return nil
 }

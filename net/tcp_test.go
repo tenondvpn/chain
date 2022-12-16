@@ -79,7 +79,7 @@ func TestTcp(t *testing.T) {
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 1; i++ {
 		wg.Add(1)
 		go SendMessage()
 	}
