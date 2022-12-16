@@ -54,7 +54,7 @@ func SendMessage() {
 	binary.BigEndian.PutUint32(val[8:], uint32(index))
 	index++
 	val = append(val, data...)
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 10000000; i++ {
 		n, err := tcpClient.Send(tcpConnection, val)
 		if err != nil {
 			fmt.Printf("send message failed: %d, %v", n, err)
@@ -80,7 +80,7 @@ func TestTcp(t *testing.T) {
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 4; i++ {
 		wg.Add(1)
 		go SendMessage()
 	}
