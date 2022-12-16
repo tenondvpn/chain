@@ -3,7 +3,6 @@ package net
 import (
 	"encoding/binary"
 	"fmt"
-	"net"
 	"testing"
 	"time"
 )
@@ -15,11 +14,11 @@ var (
 	ttime         int64 = time.Now().UnixMicro()
 )
 
-func onMsgForTest(data []byte, conn *net.Conn, msgBuf *MsgBuffer) bool {
-	t := binary.BigEndian.Uint32(data[4:8])
+func onMsgForTest(qMsg *QueueMsg) bool {
+	t := binary.BigEndian.Uint32(qMsg.data[4:8])
 	if t == 0 { // from client
-		binary.BigEndian.PutUint32(data[4:], uint32(1))
-		(*conn).Write(data)
+		binary.BigEndian.PutUint32(qMsg.data[4:], uint32(1))
+		(*qMsg.conn).Write(qMsg.data)
 	} else {
 		index++
 		etime := time.Now().UnixMicro()
