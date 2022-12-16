@@ -141,7 +141,7 @@ func (h *MessageHandler) onRxMessage(data []byte, conn *net.Conn) {
 	}
 
 	qId := binary.BigEndian.Uint16(data[6:])
-	logrus.Info("message id coming: %v", qId)
+	logrus.Infof("message id coming: %d", qId)
 }
 
 func (h *MessageHandler) onTxMessage(data []byte, conn *net.Conn) {
@@ -151,5 +151,5 @@ func (h *MessageHandler) onTxMessage(data []byte, conn *net.Conn) {
 	}
 
 	qId := binary.BigEndian.Uint16(data[6:])
-	logrus.Info("message id coming: %v", qId)
+	logrus.Infof("message id coming: %d", qId)
 }
