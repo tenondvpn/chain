@@ -15,16 +15,18 @@ func TestProto(t *testing.T) {
 
 	data, err := proto.Marshal(test)
 	if err != nil {
-		t.Errorf("marshaling error: ", err)
+		t.Errorf("marshaling error: %v", err)
 		return
 	}
 	newTest := &BroadcastParam{}
 	err = proto.Unmarshal(data, newTest)
 	if err != nil {
-		t.Errorf("unmarshaling error: ", err)
+		t.Errorf("unmarshaling error: %v", err)
+		return
 	}
 	// Now test and newTest contain the same data.
 	if test.GetNeighborCount() != newTest.GetNeighborCount() {
 		t.Errorf("data mismatch %q != %q", test.GetNeighborCount(), newTest.GetNeighborCount())
+		return
 	}
 }
