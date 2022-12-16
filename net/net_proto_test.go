@@ -30,5 +30,7 @@ func TestProto(t *testing.T) {
 		t.Errorf("data mismatch %q != %q", test.GetNeighborCount(), newTest.GetNeighborCount())
 		return
 	}
-	fmt.Printf("tset proto success: %d!\n", *test.NeighborCount+1)
+
+	*test.NeighborCount += 1
+	fmt.Printf("tset proto success: %d!\n", *test.NeighborCount)
 }
