@@ -9,7 +9,7 @@ import (
 func TestProto(t *testing.T) {
 	test := &BroadcastParam{}
 	var tt uint32 = 1
-	test.Type = &tt
+	test.NeighborCount = &tt
 
 	data, err := proto.Marshal(test)
 	if err != nil {
@@ -21,7 +21,7 @@ func TestProto(t *testing.T) {
 		t.Errorf("unmarshaling error: ", err)
 	}
 	// Now test and newTest contain the same data.
-	if test.GetType() != newTest.GetType() {
-		t.Errorf("data mismatch %q != %q", test.GetType(), newTest.GetType())
+	if test.GetNeighborCount() != newTest.GetNeighborCount() {
+		t.Errorf("data mismatch %q != %q", test.GetNeighborCount(), newTest.GetNeighborCount())
 	}
 }
