@@ -6,6 +6,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -61,6 +63,12 @@ func SendMessage() {
 }
 
 func TestTcp(t *testing.T) {
+	logrus.SetReportCaller(true)
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors:   true,
+		TimestampFormat: "2006-01-02 15:03:04",
+	})
+
 	svr := NewTcpServer(onMsgForTest)
 	go svr.StartServer("127.0.0.1:8990")
 	time.Sleep(time.Second * 1)
