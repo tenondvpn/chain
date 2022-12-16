@@ -16,8 +16,8 @@ var (
 	allreceiedCount  int64 = 0
 	btime            int64 = time.Now().UnixMicro()
 	ttime            int64 = time.Now().UnixMicro()
-	testMessageCount       = 10000000
-	testThreadCount        = 4
+	testMessageCount int64 = 10000000
+	testThreadCount  int64 = 4
 )
 
 func onMsgForTest(qMsg *QueueMsg) bool {
