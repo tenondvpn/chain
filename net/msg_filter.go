@@ -32,12 +32,12 @@ func (f *MessageFilter) CheckUnique(msgHash uint64) bool {
 	f.addedQueue.Enqueue(msgHash)
 	if len(f.uniqueMessageSet) >= f.maxSavedCount {
 		headMsgHash := f.addedQueue.Dequeue()
-		tmpheadMsgHash, ok := headMsgHash.(*uint64)
+		tmpheadMsgHash, ok := headMsgHash.(uint64)
 		if !ok {
 			panic("transfer data msg buffer failed!")
 		}
 
-		delete(f.uniqueMessageSet, *tmpheadMsgHash)
+		delete(f.uniqueMessageSet, tmpheadMsgHash)
 	}
 
 	return true
