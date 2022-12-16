@@ -1,0 +1,53 @@
+syntax = "proto2";
+
+package dispatcher;
+option go_package = "./;dispatcher";
+
+message BroadcastParam {
+	optional uint32 NeighborCount = 1 [default = 7];
+	optional uint32 StopTimes = 2 [default = 2];
+	optional uint32 HopLimit = 3 [default = 10];
+	optional uint64 LayerLeft = 4;
+	optional uint64 LayerRight = 5;
+	optional float Overlap = 6 [default = 0.1];
+	optional uint32 HopToLayer = 7 [default = 2];
+	repeated uint64 Bloomfilter = 8;
+	optional float EvilRate = 9 [default = 0.0];
+	optional uint32 IgnBloomfilterHop = 10 [default = 1];
+}
+
+message Header {
+	optional string SrcDhtKey = 1;
+	optional string DesDhtKey = 2;
+	optional string SrcNodeId = 3;
+	optional string DesNodeId = 4;
+	optional uint32 HopCount = 5;
+	optional string Data = 6;
+	optional uint32 Priority = 7;
+	optional string Debug = 8;
+	optional string FromIp = 9;  // will clear before transport send, not use
+	optional uint32 FromPort = 10;  // will clear before transport send, not use
+	optional string ToIp = 11;  // will clear before transport send, not use
+	optional uint32 ToPort = 12;  // will clear before transport send, not use
+	optional uint32 Id = 13;
+	optional uint64 Hash = 14;
+	optional uint32 Type = 15;
+	optional bool Client = 16;
+	optional bool ClientRelayed =  17;
+	optional bool ClientProxy = 18;  // for local node to handle client message and direct send back
+	optional string ClientDhtKey = 19;
+	optional bool ClientHandled = 20;
+	optional bool Universal = 21;
+	optional BroadcastParam Broadcast = 22;
+	optional bool Handled = 23;
+	optional uint64 DesDhtKeyHash = 24;
+	optional string Pubkey = 25;
+	optional string Sign = 26;
+	optional bool Local = 27;
+	optional int32 DesNetwork = 28;
+	optional string DesCountry = 29;
+	optional int32 TransportType = 30;
+	optional int32 Version = 31;
+    repeated uint64 Timestamps = 32;  // for test delay
+	optional uint32 ThreadIdx = 33;
+}
