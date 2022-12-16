@@ -49,7 +49,7 @@ func SendMessage() {
 	}
 
 	data := []byte("testsdadfasdfasdfadfd")
-	val := make([]byte, 4)
+	val := make([]byte, 12)
 	binary.BigEndian.PutUint32(val[0:], uint32(12+len(data)))
 	binary.BigEndian.PutUint32(val[4:], 0)
 	binary.BigEndian.PutUint32(val[8:], 0)
