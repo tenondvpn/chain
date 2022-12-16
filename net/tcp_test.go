@@ -3,6 +3,7 @@ package net
 import (
 	"encoding/binary"
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 )
@@ -36,12 +37,8 @@ func onMsgForTest(qMsg *QueueMsg) bool {
 	return true
 }
 
-func TestTcp(t *testing.T) {
-	svr := NewTcpServer(onMsgForTest)
-	go svr.StartServer("127.0.0.1:8990")
-	time.Sleep(time.Second * 1)
+func SendMessage() {
 	tcpClient := NewTcpClient(onMsgForTest)
-
 	tcpConnection = tcpClient.ConnectServer("127.0.0.1:8990")
 	if tcpConnection == nil {
 		fmt.Println("connect error.")
@@ -55,13 +52,26 @@ func TestTcp(t *testing.T) {
 	binary.BigEndian.PutUint32(val[8:], uint32(index))
 	index++
 	val = append(val, data...)
-	for i := 0; i < 10000000; i++ {
+	for i := 0; i < 1000000; i++ {
 		tcpClient.Send(tcpConnection, val)
-		if i%50000 == 0 {
-			time.Sleep(time.Second)
-		}
 	}
-	time.Sleep(time.Second * 10000000)
+
 	tcpClient.Close(tcpConnection)
 	fmt.Println("close success")
+}
+
+func TestTcp(t *testing.T) {
+	svr := NewTcpServer(onMsgForTest)
+	go svr.StartServer("127.0.0.1:8990")
+	time.Sleep(time.Second * 1)
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < 2; i++ {
+		wg.Add(1)
+		go SendMessage()
+	}
+
+	wg.Wait()
+	fmt.Println("all over")
 }
