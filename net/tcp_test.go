@@ -51,7 +51,7 @@ func SendMessage() {
 	binary.BigEndian.PutUint32(val[4:], 0)
 	binary.BigEndian.PutUint32(val[8:], 0)
 	val = append(val, data...)
-	for i := 0; i < testMessageCount; i++ {
+	for i := int64(0); i < testMessageCount; i++ {
 		n, err := tcpClient.Send(tcpConnection, val)
 		if err != nil {
 			fmt.Printf("send message failed: %d, %v", n, err)
