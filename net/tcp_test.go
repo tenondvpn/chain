@@ -14,6 +14,7 @@ import (
 var (
 	tcpConnection    *EventItem
 	allreceiedCount  int64 = 0
+	prevReceiedCount int64 = 0
 	btime            int64 = time.Now().UnixMicro()
 	ttime            int64 = time.Now().UnixMicro()
 	testMessageCount int64 = 10000000
@@ -90,6 +91,7 @@ func TestTcp(t *testing.T) {
 	}
 
 	wg.Wait()
+	fmt.Println("wait over")
 	svr.StopServer()
 	fmt.Println("all over")
 }
