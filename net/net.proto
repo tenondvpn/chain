@@ -17,17 +17,17 @@ message BroadcastParam {
 }
 
 message Header {
-	optional bytes SrcDhtKey = 1;
-	optional bytes DesDhtKey = 2;
-	optional bytes SrcNodeId = 3;
-	optional bytes DesNodeId = 4;
+	optional string SrcDhtKey = 1;
+	optional string DesDhtKey = 2;
+	optional string SrcNodeId = 3;
+	optional string DesNodeId = 4;
 	optional uint32 HopCount = 5;
-	optional bytes Data = 6;
+	optional string Data = 6;
 	optional uint32 Priority = 7;
-	optional bytes Debug = 8;
-	optional bytes FromIp = 9;  // will clear before transport send, not use
+	optional string Debug = 8;
+	optional string FromIp = 9;  // will clear before transport send, not use
 	optional uint32 FromPort = 10;  // will clear before transport send, not use
-	optional bytes ToIp = 11;  // will clear before transport send, not use
+	optional string ToIp = 11;  // will clear before transport send, not use
 	optional uint32 ToPort = 12;  // will clear before transport send, not use
 	optional uint32 Id = 13;
 	optional uint64 Hash = 14;
@@ -35,17 +35,17 @@ message Header {
 	optional bool Client = 16;
 	optional bool ClientRelayed =  17;
 	optional bool ClientProxy = 18;  // for local node to handle client message and direct send back
-	optional bytes ClientDhtKey = 19;
+	optional string ClientDhtKey = 19;
 	optional bool ClientHandled = 20;
 	optional bool Universal = 21;
 	optional BroadcastParam Broadcast = 22;
 	optional bool Handled = 23;
 	optional uint64 DesDhtKeyHash = 24;
-	optional bytes Pubkey = 25;
-	optional bytes Sign = 26;
+	optional string Pubkey = 25;
+	optional string Sign = 26;
 	optional bool Local = 27;
 	optional int32 DesNetwork = 28;
-	optional bytes DesCountry = 29;
+	optional string DesCountry = 29;
 	optional int32 TransportType = 30;
 	optional int32 Version = 31;
     repeated uint64 Timestamps = 32;  // for test delay
