@@ -48,10 +48,10 @@ func (h *MessageHandler) handleMessage(
 		for {
 			n, buf, err := item.msgBuf.readFromReader()
 			if err != nil {
-				logrus.Errorf("failed to read data %v", err)
 				if err := epoller.Remove(item); err != nil {
 					logrus.Errorf("failed to remove %v", err)
 				}
+
 				item.conn.Close()
 				break
 			}

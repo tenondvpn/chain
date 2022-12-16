@@ -71,7 +71,6 @@ func (e *epoll) Remove(item *EventItem) error {
 		return err
 	}
 
-	logrus.Infof("removed epoll.")
 	item.removed = true
 	return nil
 }
